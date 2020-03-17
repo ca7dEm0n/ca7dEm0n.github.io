@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>django on zeKe</title>
+    <link>https://a-cat.cn/tags/django/</link>
+    <description>Recent content in django on zeKe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 14 Jan 2020 15:00:04 +0800</lastBuildDate>
+    
+	<atom:link href="https://a-cat.cn/tags/django/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Django Models查库姿势</title>
+      <link>https://a-cat.cn/posts/python/django_models/</link>
+      <pubDate>Tue, 14 Jan 2020 15:00:04 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/python/django_models/</guid>
+      <description>本文章记录django models使用姿势
+ datetime时间范围查询 查询今天内的的数据
+from datetime import datetime from datetime import time now_datetime = datetime.now() min_datetime = datetime.</description>
+    </item>
+    
+  </channel>
+</rss>

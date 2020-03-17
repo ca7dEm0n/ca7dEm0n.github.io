@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>python on zeKe</title>
+    <link>https://a-cat.cn/series/python/</link>
+    <description>Recent content in python on zeKe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 15 May 2019 12:49:13 +0800</lastBuildDate>
+    
+	<atom:link href="https://a-cat.cn/series/python/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>尝试自己写一个Python缓存装饰器</title>
+      <link>https://a-cat.cn/posts/python/python_cache/</link>
+      <pubDate>Wed, 15 May 2019 12:49:13 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/python/python_cache/</guid>
+      <description>本文记录尝试编写一个简单的缓存装饰器，以学习为目的，实际生产环境建议大家用标准库。
+from hashlib import md5 from pickle import dump, load # 用pickle进行数据的读取、写入 def _dkL(f): with open(f,&#39;rb&#39;) as file: return load(file) def _dkD(o,f): with open(f, &#39;wb&#39;) as file: return dump(o,file) def cache(ex_time=10, start=0, have_args=True, have_kw=True, cache_path=&amp;quot;/tmp/pyCache&amp;quot;): # 判断缓存目录是否存在 if not path.</description>
+    </item>
+    
+  </channel>
+</rss>
