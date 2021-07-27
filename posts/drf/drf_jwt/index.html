@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Django Rest Framework JWT鉴权实践</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<script src="/js/book.js"></script>
+	<script src="/js/index.js"></script>
+	
+	<script>next()</script>
+</head>
+<body>
+	
+<header>
+	<a href="https://a-cat.cn" onclick="change('taiji')"><h1>☯️</h1></a>
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Django Rest Framework JWT鉴权实践</h1>
+			<time>22.03.2019 19:01</time>
+			<div>
+				
+
+<blockquote>
+<p>本文章记录在drf框架中对JWT鉴权实践过程.</p>
+</blockquote>
+
+<h1 id="实践">实践</h1>
+
+<p>安装<code>djangorestframework-jwt</code>模块</p>
+
+<h2 id="场景1-修改默认username作为用户名验证">场景1: 修改默认Username作为用户名验证</h2>
+
+<blockquote>
+<p>改成以uid作为用户名</p>
+</blockquote>
+
+<p>settings.py</p>
+
+<pre><code class="language-python">
+JWT_PAYLOAD_GET_USERNAME_HANDLER = 'uid'
+
+# 修改验证后端
+AUTHENTICATION_BACKENDS = [
+    'auth.utils.UidAuthenticate'
+]
+
+REST_USE_JWT = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser'
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',  
+    )
+}
+</code></pre>
+
+<p>auth.utils</p>
+
+<pre><code class="language-python">class UidAuthenticate(ModelBackend):
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        try:
+            # 改动此处
+            user = User.objects.get(uid=username)
+            if user.check_password(password):
+                return user
+        except Exception as e:
+            return None
+</code></pre>
+
+<p>models.py</p>
+
+<pre><code class="language-python">from django.contrib.auth.models import AbstractUser
+class User(AbstractUser):
+    # ...
+
+    # 类中指定uid作为用户名字段
+    USERNAME_FIELD = 'uid'
+</code></pre>
+
+<p>url.py</p>
+
+<pre><code class="language-python">from rest_framework_jwt.views import obtain_jwt_token
+
+urlpatterns = [
+    # 登录
+    path('login/',obtain_jwt_token)
+]
+</code></pre>
+
+<p>测试</p>
+
+<pre><code class="language-shell">curl --request POST \
+  --url http://localhost:8000/login/ \
+  --header 'cache-control: no-cache' \
+  --header 'content-type: multipart/form-data;'
+  --form password=123123123 \
+  --form uid=123
+
+# {
+# &quot;token&quot;: &quot;eyJ0eXAiOiJKV1QiLCJhbDcu9pvU ...&quot;
+# }
+</code></pre>
+
+<h2 id="场景2-新增ldap支持">场景2: 新增LDAP支持</h2>
+
+<p>提示</p>
+
+<ul>
+<li>官网: 验证模块应该是可插拔的。</li>
+<li>列表顺序等于验证顺序，验证不通过就用下一个，直到全部失败。</li>
+</ul>
+
+<p>settings.py</p>
+
+<pre><code class="language-python">AUTHENTICATION_BACKENDS = [
+    'auth.utils.UidAuthenticate',
+
+    # 新增
+    'django_auth_ldap.backend.LDAPBackend',
+]
+
+# 根据实际修改
+AUTH_LDAP_SERVER_URI = AD_DOMAIN
+AUTH_LDAP_BIND_DN = AD_ADMIN_USER
+AUTH_LDAP_BIND_PASSWORD = AD_ADMIN_PASSWD
+AUTH_LDAP_USER_SEARCH = LDAPSearch(AD_DN, ldap.SCOPE_SUBTREE, &quot;(&amp;(objectClass=person)(samaccountname=%(user)s))&quot;)
+AUTH_LDAP_ALWAYS_UPDATE_USER = True
+AUTH_LDAP_USER_ATTR_MAP = {
+    &quot;username&quot;: &quot;cn&quot;,
+    &quot;email&quot;: &quot;mail&quot;,
+    &quot;first_name&quot;:&quot;sn&quot;,
+    &quot;last_name&quot;:&quot;givenName&quot;,
+    &quot;uid&quot;: &quot;sAMAccountName&quot;,
+}
+
+</code></pre>
+
+<h2 id="场景3-payload自定义">场景3: Payload自定义</h2>
+
+<p>utils.py</p>
+
+<pre><code class="language-python">def jwt_payload_handler(user):
+    username_field = get_username_field()
+    username = get_username(user)
+    warnings.warn(
+        'The following fields will be removed in the future: '
+        '`email` and `user_id`. ', DeprecationWarning)
+    # 自定义
+    payload = {
+        'user_id': user.pk,
+        'username': username,
+        'user_title': user.user_title,
+        'user_role': user.user_role,
+        'exp': datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA
+    }
+    if hasattr(user, 'email'):
+        payload['email'] = user.email
+
+    payload[username_field] = username
+
+    if api_settings.JWT_ALLOW_REFRESH:
+        payload['orig_iat'] = timegm(datetime.utcnow().utctimetuple())
+
+    if api_settings.JWT_AUDIENCE is not None:
+        payload['aud'] = api_settings.JWT_AUDIENCE
+
+    if api_settings.JWT_ISSUER is not None:
+        payload['iss'] = api_settings.JWT_ISSUER
+
+    return payload
+</code></pre>
+
+<p>settings.py</p>
+
+<pre><code class="language-python">JWT_AUTH = {
+    'JWT_PAYLOAD_HANDLER': 'utils.jwt_payload_handler'
+}
+</code></pre>
+
+<h3 id="场景4-response自定义">场景4: Response自定义</h3>
+
+<p>utils.py</p>
+
+<pre><code class="language-python">def jwt_response_payload_handler(token, user=None, request=None):
+    user = User.objects.get(uid=str(user))
+    return {
+        'token': token,
+        # 自定义返回
+        'user': {
+            'role': user.user_role,
+            'username': user.username,
+            'title': user.user_title,
+        },
+    }
+</code></pre>
+
+<p>settings.py</p>
+
+<pre><code class="language-python">JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'utils.jwt_response_payload_handler'
+}
+</code></pre>
+
+			</div>
+			
+			<div>
+				<ul id="tags">
+					
+					<li><a href="/tags/drf">drf</a></li>
+					
+				</ul>
+			</div>
+			
+			<div>
+				
+			</div>
+		</article>
+	</main>
+<aside>
+	<div id="blog-content">
+		<div style="margin-top: 2em">
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/about/">关于我</a></li>
+				
+				<li><a href="/posts/python/my_zshrc/">花里胡哨::zshrc每日一个修仙小技巧</a></li>
+				
+				<li><a href="/posts/lua/lua_web_page/">openresty使用Lua开发简单功能页面</a></li>
+				
+				<li><a href="/posts/drf/drf_upload/">Django Rest Framework Image Upload</a></li>
+				
+				<li><a href="https://a-cat.cn/posts/about/">About</a></li>
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2021 <a href="https://a-cat.cn">zeKe</a></p>
+</footer>
+
+</body>
+</html>

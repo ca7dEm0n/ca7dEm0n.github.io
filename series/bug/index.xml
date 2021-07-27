@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>bug on zeKe</title>
+    <link>https://a-cat.cn/series/bug/</link>
+    <description>Recent content in bug on zeKe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 04 Jan 2020 18:28:05 +0800</lastBuildDate>
+    
+	<atom:link href="https://a-cat.cn/series/bug/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Openresty开发采坑记录</title>
+      <link>https://a-cat.cn/posts/lua/bug/</link>
+      <pubDate>Sat, 04 Jan 2020 18:28:05 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/lua/bug/</guid>
+      <description>本文章记录Openresty学习使用过程中碰到的坑.
+ #1 打印日志 初学为了直观显示输出,习惯性使用ngx.say调试.
+在一开发跳转需求功能的时候发现:
+ ngx.say会覆盖ngx.req.set_uri(跳转功能)影响最终结果.
+ #2 Redis连接Bad request 为了Redis连接池共用，将Redis连接存储为共享数据.
+后续使用断断续续出现Bad request.
+查官网后得知真相:
+ 建议不要使用全局lua变量，并发请求可能会出现因资源竞争导致的请求失败. 传送门</description>
+    </item>
+    
+    <item>
+      <title>Vue采坑记录</title>
+      <link>https://a-cat.cn/posts/vue/bug/</link>
+      <pubDate>Sat, 04 Jan 2020 18:28:00 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/vue/bug/</guid>
+      <description>本文章记录Vue学习使用过程中碰到的坑.
+ #1 router.options.routes  addRouter无法动态渲染菜单问题.  原因: 根据Vue官网介绍，该路由信息，在创建后不得更改. 传送门
+需求场景: 用户登录时根据权限动态渲染菜单，需要读取后添加路由.
+解决方案: 遍历路由表，将路由Push到列表内.
+// routerList为路由列表 // routerObj为路由对象 for (let i in routerList) { routerObj.</description>
+    </item>
+    
+  </channel>
+</rss>

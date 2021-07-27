@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Posts</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<script src="/js/book.js"></script>
+	<script src="/js/index.js"></script>
+	<link rel="alternate" type="application/rss+xml" href="/posts/index.xml" title="zeKe">
+	<script>next()</script>
+</head>
+<body>
+	
+<header>
+	<a href="https://a-cat.cn" onclick="change('taiji')"><h1>☯️</h1></a>
+</header>
+
+	
+	<main>
+		
+		<div>
+			<h1>Posts</h1>
+			
+		</div>
+		
+
+		
+			<article>
+	<h1><a href="https://a-cat.cn/posts/python/python_cache/">尝试自己写一个Python缓存装饰器</a></h1>
+	<time>15.05.2019 12:49</time>
+	
+	<a href="/tags/python">python</a>
+	
+	<div>
+		本文记录尝试编写一个简单的缓存装饰器，以学习为目的，实际生产环境建议大家用标准库。
+from hashlib import md5 from pickle import dump, load # 用pickle进行数据的读取、写入 def _dkL(f): with open(f,'rb') as file: return load(file) def _dkD(o,f): with open(f, 'wb') as file: return dump(o,file) def cache(ex_time=10, start=0, have_args=True, have_kw=True, cache_path=&quot;/tmp/pyCache&quot;): # 判断缓存目录是否存在 if not path.
+		
+			<a href="https://a-cat.cn/posts/python/python_cache/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://a-cat.cn/posts/drf/drf_pages/">Django Rest Framework 分页功能与搜索功能</a></h1>
+	<time>27.03.2019 10:25</time>
+	
+	<a href="/tags/drf">drf</a>
+	
+	<div>
+		本文章记录在drf框架中实现分页、搜索功能.
+ 实践 分页器 分页器的实现官网介绍有两种方式：
+ 配置文件配置 继承父类完成自定义分页器  分析分页器源码
+自定义分页器主要是继承PageNumberPagination，改写get_paginated_response方法与paginate_queryset方法. &gt; 其中get_paginated_response主要是编写分页器的返回结果.
+需求示例：
+前端采用iView组件中的分页器，该前端分页器主要接收总页数与当前页数.所以后端需要返回数据，并且返回一个总页数.
+class MyPagination(PageNumberPagination): # 指定每一页的个数，默认为配置文件里面的PAGE_SIZE page_size = 10 # 可以让前端指定每页个数，默认为空，这里指定page_size去指定显示个数 page_size_query_param = 'page_size' # 可以让前端指定页码数，默认就是page参数去接收 page_query_param = 'page' # 指定返回格式，根据需求返回一个总页数，数据存在results字典里返回 def get_paginated_response(self, data): from collections import OrderedDict return Response( OrderedDict([('count', self.
+		
+			<a href="https://a-cat.cn/posts/drf/drf_pages/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://a-cat.cn/posts/drf/drf_jwt/">Django Rest Framework JWT鉴权实践</a></h1>
+	<time>22.03.2019 19:01</time>
+	
+	<a href="/tags/drf">drf</a>
+	
+	<div>
+		本文章记录在drf框架中对JWT鉴权实践过程.
+ 实践 安装djangorestframework-jwt模块
+场景1: 修改默认Username作为用户名验证  改成以uid作为用户名
+ settings.py
+JWT_PAYLOAD_GET_USERNAME_HANDLER = 'uid' # 修改验证后端 AUTHENTICATION_BACKENDS = [ 'auth.
+		
+			<a href="https://a-cat.cn/posts/drf/drf_jwt/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+		<div>
+
+	<a href="/posts/#blog">Previous Page</a>
+
+2 of 2
+
+</div>
+
+	</main>
+<aside>
+	<div id="blog-content">
+		<div style="margin-top: 2em">
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/about/">关于我</a></li>
+				
+				<li><a href="/posts/python/my_zshrc/">花里胡哨::zshrc每日一个修仙小技巧</a></li>
+				
+				<li><a href="/posts/lua/lua_web_page/">openresty使用Lua开发简单功能页面</a></li>
+				
+				<li><a href="/posts/drf/drf_upload/">Django Rest Framework Image Upload</a></li>
+				
+				<li><a href="https://a-cat.cn/posts/about/">About</a></li>
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2021 <a href="https://a-cat.cn">zeKe</a></p>
+</footer>
+
+</body>
+</html>

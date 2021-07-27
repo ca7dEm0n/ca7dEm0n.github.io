@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>使用Django Rest Framework进行API接口开发</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<script src="/js/book.js"></script>
+	<script src="/js/index.js"></script>
+	
+	<script>next()</script>
+</head>
+<body>
+	
+<header>
+	<a href="https://a-cat.cn" onclick="change('taiji')"><h1>☯️</h1></a>
+</header>
+
+	
+	<main>
+		<article>
+			<h1>使用Django Rest Framework进行API接口开发</h1>
+			<time>06.01.2020 15:47</time>
+			<div>
+				
+
+<blockquote>
+<p>本文章记录使用drf框架进行API接口开发</p>
+</blockquote>
+
+<h1 id="安装">安装</h1>
+
+<ul>
+<li>安装模块</li>
+</ul>
+
+<pre><code class="language-shell">pip install djangorestframework  
+</code></pre>
+
+<ul>
+<li>快速启动项目</li>
+</ul>
+
+<pre><code class="language-shell"># 生成一个名为name的项目
+django-admin startproject app 
+
+# 生成名为api的app
+django-admin startapp api 
+</code></pre>
+
+<h3 id="引入">引入</h3>
+
+<p>settings.py</p>
+
+<pre><code class="language-python">INSTALLED_APPS = [
+    # ... 省略
+    'rest_framework',
+]
+REST_FRAMEWORK = {
+    # 默认解析，为了解析POST内容
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser'
+    )
+}
+</code></pre>
+
+<h3 id="配置">配置</h3>
+
+<p>.DEBUG_CONFIG</p>
+
+<pre><code class="language-shell"># 配置文件
+export DB_DATABASE=&quot;information&quot;
+export DB_USER=&quot;root&quot;
+export DB_PASSWORD=&quot;123456&quot;
+export DB_HOST=&quot;127.0.0.1&quot;
+export DB_PORT=&quot;3306&quot;
+</code></pre>
+
+<p>settings.py</p>
+
+<pre><code class="language-python"># 读取敏感信息读取环境变量
+ENV_DICT    = os.environ
+DB_DATABASE = ENV_DICT.get('DB_DATABASE','')
+DB_USER     = ENV_DICT.get('DB_USER','')
+DB_HOST     = ENV_DICT.get('DB_HOST','localhost')
+DB_PORT     = int(ENV_DICT.get('DB_PORT','3306'))
+DB_PASSWORD = ENV_DICT.get('DB_PASSWORD','123456')
+DATABASES   = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': DB_DATABASE,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
+        'CONN_MAX_AGE': 3600,
+    }
+}
+</code></pre>
+
+<h3 id="启动脚本">启动脚本</h3>
+
+<p>run.sh</p>
+
+<pre><code class="language-shell"># git clone https://github.com/ca7dEm0n/ShellSDK 
+# mv ShellSDK/sdk ./
+# rm -rf ShellSDK
+
+. ./sdk/utils
+. ./sdk/echo
+
+SCRIPT_DIR=$(cd $(dirname ${BASH_SOURCE[0]}); pwd)
+
+init() {
+    : 读取最新修改的配置文件
+    CONFIG_FILE_NAME=$(ls -at |grep &quot;.*_CONFIG&quot; |head -1)
+    [ -z &quot;${CONFIG_FILE_NAME}&quot; ] &amp;&amp; echoRed &quot;[!] config not found&quot; &amp;&amp; exit 0
+
+    : 加载环境变量
+    source ${CONFIG_FILE_NAME}
+    : 初始化
+    PYTHON=${PYTHON:-&quot;python&quot;}
+    LOG_LEVEL=${SHELL_LOG_LEVEL:-2}
+    LOG_PATH=${SHELL_LOG_PATH:-&quot;run.log&quot;}
+    LOG_CONSOLE=${SHELL_LOG_CONSOLE:-1}
+    wLog 2 &quot;读取[${CONFIG_FILE_NAME}]配置文件&quot;
+}
+
+manage() {
+    wLog 2 &quot;执行[$*]&quot;
+    ${PYTHON} manage.py $*
+}
+
+init
+$*
+</code></pre>
+
+<h1 id="上手">上手</h1>
+
+<blockquote>
+<p>需求： 做一个记录日常维护记录功能</p>
+</blockquote>
+
+<ul>
+<li>包含一个列表页.</li>
+<li>可以增删改查某个记录.</li>
+</ul>
+
+<h3 id="列表页查询">列表页查询</h3>
+
+<p>models.py</p>
+
+<pre><code class="language-python">from django.db import models
+class OpsModels(models.Model):
+    name = models.CharField(max_length=100, unique=True, verbose_name=&quot;维护名称&quot;)
+    user = models.CharField(max_length=20, verbose_name='作者')
+    projectname = models.CharField(max_length=100, blank=True, null=True, verbose_name=&quot;维护项目&quot;)
+    contents = models.TextField(max_length=100000, blank=True, null=True, verbose_name=&quot;维护内容&quot;)
+    ops_time = models.DateTimeField(verbose_name=&quot;维护时间&quot;)
+
+    def __str__(self):
+        return self.name
+</code></pre>
+
+<p>创建并生成</p>
+
+<pre><code class="language-shell">sh run.sh manage makemigrations
+sh run.sh manage migrate
+</code></pre>
+
+<p>完成数据库部分后，开始写序列化部分.</p>
+
+<blockquote>
+<p>因为是用于列表页的序列化，所以我们排除<code>内容</code>字段.
+<code>ModelSerializer</code>默认会包含所有字段.</p>
+</blockquote>
+
+<p>serializer.py</p>
+
+<pre><code class="language-python">from .models import *
+from rest_framework import serializers
+
+class OPSListSerializers(serializers.ModelSerializer):
+    class Meta:
+        model   = OpsModels
+        exclude = ['contents']
+</code></pre>
+
+<p>完成了数据库部分以及序列化部分后，咱们开始写视图部分.</p>
+
+<p>通常，一个视图集成<code>分页</code>、<code>搜索</code>、 <code>鉴权</code>等功能，你可能会这样写</p>
+
+<pre><code class="language-python">class List(APIView):
+    permission_classes = [IsAdminRole,]
+
+    def get(self, request, format=None):
+        pagination_class = MyPagination()
+        search_class = filters.SearchFilter()
+        self.search_fields = [
+            'id', 'property_number'
+        ]
+        
+        assets_lists = AssetsList.objects.all().order_by('id')
+
+        search_query = search_class.filter_queryset(request, assets_lists,
+                                                    self)
+        page_query = pagination_class.paginate_queryset(
+            queryset=search_query, request=request, view=self)
+
+        result_serializer = AssetsListSerializer(page_query, many=True)
+        page_result = pagination_class.get_paginated_response(
+            result_serializer.data)
+        return page_result
+</code></pre>
+
+<p>但其实<code>restframework</code>都有集成一些你想到的并且通用的视图类.</p>
+
+<p>所以我们用一个通用类来完成列表页展示需求.</p>
+
+<p>views.py</p>
+
+<pre><code class="language-python">from rest_framework import filters, generics
+from pysdk.web.drf import MyPagination
+from .serializer import *
+
+# 通过查阅源码发现
+# 其实ListAPIView就是继承mixins.ListModelMixin与GenericAPIView
+class OPSListView(generics.ListAPIView):
+		# 指定查询数据
+    queryset = OpsModels.objects.all().order_by('id')
+    # 指定序列化
+    serializer_class = OPSListSerializers
+    
+    # 分页功能
+    pagination_class = MyPagination
+    
+    # 指定搜索功能
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['id', 'name', 'user']
+</code></pre>
+
+<p>url.py</p>
+
+<pre><code class="language-python">from django.urls import path
+
+urlpatterns = [
+    path('ops/', OPSListView.as_view())
+]
+</code></pre>
+
+<p>补充一下，我的分页器长这样:
+- 使用<code>page_size</code>指定返回数量长度大小.
+- 使用<code>page</code>关键字指定页数.
+- 返回内容十分简单，只有<code>count</code>与<code>results</code></p>
+
+<pre><code class="language-python">class MyPagination(PageNumberPagination):
+    '''
+    @description: 自定义分页器
+    '''
+    page_size = 10
+    page_size_query_param = 'page_size'
+    page_query_param = 'page'
+
+    def get_paginated_response(self, data):
+        return Response(
+            OrderedDict([('count', self.page.paginator.count),
+                         ('results', data)]))
+</code></pre>
+
+<p>完成后插入测试数据，你可以像这样测试:</p>
+
+<pre><code class="language-shell"># 默认请求，默认返回10条记录
+GET /ops/
+
+# 获取第二页，每页20条数据
+GET /ops/?page=2&amp;page_size=20
+
+# 搜索字段中包含&quot;测试&quot;的数据，返回第二页，每页展示20条记录
+GET /api/ops/?page=2&amp;page_size=20&amp;search=测试
+
+</code></pre>
+
+<h3 id="创建一个新记录">创建一个新记录</h3>
+
+<p>创建新记录即<code>POST</code>请求，我们同样采用通用视图来完成.</p>
+
+<p>serializer.py</p>
+
+<pre><code class="language-python">
+# 新增一个序列化
+# 对ops_time字段做单独处理，使其能够适配ios-8601、及我们自定义的格式
+class OPSEditSerializers(serializers.ModelSerializer):
+    ops_time = serializers.DateTimeField(
+        input_formats=[&quot;iso-8601&quot;, &quot;%Y-%m-%d %H:%M:%S&quot;]
+    )
+    class Meta:
+        model  = OpsModels
+        fields = &quot;__all__&quot;
+
+		# 增加一个create方法
+    def create(self, validated_data):
+        return OpsModels.objects.create(**validated_data)
+</code></pre>
+
+<p>views.py</p>
+
+<pre><code class="language-python"># 继承类改为ListCreateAPIView
+# 通过查看源码，我们可以发现，该类其实新增一个CreateModelMixin的继承
+class OPSListView(generics.ListCreateAPIView):
+    queryset = OpsModels.objects.all().order_by('id')
+    serializer_class = OPSListSerializers
+    pagination_class = MyPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['id', 'name', 'user', 'projectname']
+
+    def post(self, request, *args, **kwargs):
+        self.serializer_class = OPSEditSerializers
+        return self.create(request, *args, **kwargs)
+</code></pre>
+
+<p>这里因为序列化实例改变，所以我们要覆盖post方法，将序列化实例改为<code>OPSEditSerializers</code></p>
+
+<p>完成后，进行测试</p>
+
+<pre><code class="language-shell">curl --location --request POST 'http://127.0.0.1:8000/api/ops/?search=1111' \
+		 --header 'Content-Type: application/json' \
+		 --form 'name=1' \
+     --form 'user=1' \
+     --form 'projectname=111' \
+     --form 'ops_time=2014-08-15 10:40:26' \
+     --form 'contents=22222'
+</code></pre>
+
+<h3 id="操作某个具体记录">操作某个具体记录</h3>
+
+<p>操作具体记录即(<code>GET</code> <code>PUT</code> <code>DELETE</code>)，因为没有复杂的关联，没有嵌套查询，所以我们采用通用视图来完成.</p>
+
+<p>views.py</p>
+
+<pre><code class="language-python">class OPSEditView(generics.RetrieveUpdateDestroyAPIView):
+		# 指定以某个字段查询
+    lookup_field = 'id'
+    
+    # 数据表
+    queryset = OpsModels.objects.all()
+    
+    # 序列化
+    serializer_class = OPSEditSerializers
+</code></pre>
+
+<p>urls.py</p>
+
+<pre><code class="language-python">urlpatterns = [
+    path('ops/', OPSListView.as_view()),
+    path('ops/&lt;int:id&gt;/', OPSEditView.as_view())
+]
+</code></pre>
+
+<p>测试</p>
+
+<pre><code class="language-shell"># 获取id为1的详细信息
+curl http://127.0.0.1:8000/api/ops/1/
+
+# 把id为1的name修改为test
+curl --location --request PUT 'http://127.0.0.1:8000/api/ops/1/' \
+		 --header 'Content-Type: application/json' \
+		 --form 'name=test'
+
+# 删除id为1的记录
+curl --location --request DELETE 'http://127.0.0.1:8000/api/ops/1/' \
+		 --header 'Content-Type: application/json' \
+		 --form 'name=test'
+
+</code></pre>
+
+			</div>
+			
+			<div>
+				<ul id="tags">
+					
+					<li><a href="/tags/drf">drf</a></li>
+					
+				</ul>
+			</div>
+			
+			<div>
+				
+			</div>
+		</article>
+	</main>
+<aside>
+	<div id="blog-content">
+		<div style="margin-top: 2em">
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/about/">关于我</a></li>
+				
+				<li><a href="/posts/python/my_zshrc/">花里胡哨::zshrc每日一个修仙小技巧</a></li>
+				
+				<li><a href="/posts/lua/lua_web_page/">openresty使用Lua开发简单功能页面</a></li>
+				
+				<li><a href="/posts/drf/drf_upload/">Django Rest Framework Image Upload</a></li>
+				
+				<li><a href="https://a-cat.cn/posts/about/">About</a></li>
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2021 <a href="https://a-cat.cn">zeKe</a></p>
+</footer>
+
+</body>
+</html>

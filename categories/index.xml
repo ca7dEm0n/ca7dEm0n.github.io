@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on zeKe</title>
+    <link>https://a-cat.cn/categories/</link>
+    <description>Recent content in Categories on zeKe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 20 Jul 2020 00:00:04 +0800</lastBuildDate>
+    
+	<atom:link href="https://a-cat.cn/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Python</title>
+      <link>https://a-cat.cn/categories/python/</link>
+      <pubDate>Mon, 20 Jul 2020 00:00:04 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/categories/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>lua</title>
+      <link>https://a-cat.cn/categories/lua/</link>
+      <pubDate>Mon, 16 Mar 2020 10:46:56 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/categories/lua/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ops</title>
+      <link>https://a-cat.cn/categories/ops/</link>
+      <pubDate>Tue, 14 Jan 2020 23:46:10 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/categories/ops/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ELK</title>
+      <link>https://a-cat.cn/categories/elk/</link>
+      <pubDate>Sat, 04 Jan 2020 19:08:29 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/categories/elk/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vue</title>
+      <link>https://a-cat.cn/categories/vue/</link>
+      <pubDate>Sat, 04 Jan 2020 18:28:00 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/categories/vue/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

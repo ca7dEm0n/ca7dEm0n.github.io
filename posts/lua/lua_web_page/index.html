@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>openresty使用Lua开发简单功能页面</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<script src="/js/book.js"></script>
+	<script src="/js/index.js"></script>
+	
+	<script>next()</script>
+</head>
+<body>
+	
+<header>
+	<a href="https://a-cat.cn" onclick="change('taiji')"><h1>☯️</h1></a>
+</header>
+
+	
+	<main>
+		<article>
+			<h1>openresty使用Lua开发简单功能页面</h1>
+			<time>16.03.2020 10:46</time>
+			<div>
+				
+
+<blockquote>
+<p>本文章记录使用lua开发简单API功能页.</p>
+</blockquote>
+
+<h1 id="前言">前言</h1>
+
+<p>开发过程中遇到一些特别简单的接口需求，但是单独写一个api接口页面又很麻烦的需求，这个时候可以借助lua来实现.</p>
+
+<h1 id="思路">思路</h1>
+
+<p>将简单api功能模块化，统一存放某个路径.</p>
+
+<p>调用时判断模块是否存在，否则返回404.</p>
+
+<h1 id="架构">架构</h1>
+
+<p>实现根据字符串加载模块</p>
+
+<p>utils/tools.lua</p>
+
+<pre><code class="language-lua">Tools = { _VERSION = &quot;0.1&quot; }
+
+-- 字符切割
+function Tools:split(s, p)
+    local rt = {}
+    string.gsub(s, '[^' .. p .. ']+', function(w)
+            rt[#rt + 1] = w
+    end)
+    return rt
+end
+
+-- 返回404
+function Tools:page_not_found(message)
+    local message = message or &quot;not found.&quot;
+    ngx.say(message)
+    ngx.exit(404)
+end
+
+-- 获取包
+function Tools:get_pack(module_name)
+    local file_path = package.searchpath(module_name, package.path, '.', '/')
+    if not file_path then
+        return nil
+    end
+    local loader = loadfile(file_path)
+    return loader
+end
+
+-- 加载包或直接返回404
+function Tools:require(modname)
+    if not package.loaded[modname] then
+        local loader = self:get_pack(modname)
+        if loader then
+            local module = loader(modname)
+            return module
+        else
+            self:page_not_found(modname..' pack not found.')
+        end
+    end
+    return package.loaded[modname]
+end
+
+return Tools
+</code></pre>
+
+<p>root.lua</p>
+
+<pre><code class="language-lua">ngx   = ngx
+Tools = require(&quot;utils.tools&quot;)
+
+local paga_name = Tools:split(ngx.var.request_uri, '/')[2]
+if paga_name == nil then
+    Tools:page_not_found(&quot;page not found.&quot;)
+end
+
+Tools:require(&quot;page/&quot;..paga_name).main()
+</code></pre>
+
+<p>截取URL，判断page目录下功能模块是否存在，如果存在直接实例化main，否则返回404页面.</p>
+
+<h1 id="配置">配置</h1>
+
+<pre><code>server {
+    listen       80;
+    server_name  xxxx;
+
+    location /page {
+        access_by_lua_file lua/root.lua;
+    }
+    # ...
+}
+</code></pre>
+
+<h1 id="功能页">功能页</h1>
+
+<h3 id="page-ping-lua">page/ping.lua</h3>
+
+<p>用于监控心跳检测</p>
+
+<pre><code class="language-lua">_M = {}
+
+function _M:main()
+    ngx.say('pong')
+end
+
+return _M
+</code></pre>
+
+<p>请求:  curl <a href="http://localhost/page/ping">http://localhost/page/ping</a>
+返回:  pong</p>
+
+<h3 id="page-info-lua">page/info.lua</h3>
+
+<p>实现页面查询Redis某个值</p>
+
+<pre><code class="language-lua">_M = {}
+
+function _M:main()
+    local query_string = ngx.req.get_uri_args()
+    -- GET请求  info参数
+    if query_string.info then
+        local info_value =  Redis:get(query_string.info)
+        if info_value   == ngx.null  then
+            Tools:page_not_found(&quot;info not found.&quot;)
+        end
+        ngx.say(info_value)
+    end
+end
+
+return _M
+</code></pre>
+
+<p>请求:  curl <a href="http://localhost/page/info/?info=test">http://localhost/page/info/?info=test</a>
+返回:  test value / 404</p>
+
+			</div>
+			
+			<div>
+				
+			</div>
+		</article>
+	</main>
+<aside>
+	<div id="blog-content">
+		<div style="margin-top: 2em">
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/about/">关于我</a></li>
+				
+				<li><a href="/posts/python/my_zshrc/">花里胡哨::zshrc每日一个修仙小技巧</a></li>
+				
+				<li><a href="/posts/lua/lua_web_page/">openresty使用Lua开发简单功能页面</a></li>
+				
+				<li><a href="/posts/drf/drf_upload/">Django Rest Framework Image Upload</a></li>
+				
+				<li><a href="https://a-cat.cn/posts/about/">About</a></li>
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2021 <a href="https://a-cat.cn">zeKe</a></p>
+</footer>
+
+</body>
+</html>

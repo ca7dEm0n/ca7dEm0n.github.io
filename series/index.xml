@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Series on zeKe</title>
+    <link>https://a-cat.cn/series/</link>
+    <description>Recent content in Series on zeKe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 20 Jul 2020 00:00:04 +0800</lastBuildDate>
+    
+	<atom:link href="https://a-cat.cn/series/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>zshrc</title>
+      <link>https://a-cat.cn/series/zshrc/</link>
+      <pubDate>Mon, 20 Jul 2020 00:00:04 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/series/zshrc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>openresty</title>
+      <link>https://a-cat.cn/series/openresty/</link>
+      <pubDate>Mon, 16 Mar 2020 10:46:56 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/series/openresty/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>django</title>
+      <link>https://a-cat.cn/series/django/</link>
+      <pubDate>Fri, 28 Feb 2020 10:26:10 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/series/django/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>zabbix</title>
+      <link>https://a-cat.cn/series/zabbix/</link>
+      <pubDate>Tue, 14 Jan 2020 23:46:10 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/series/zabbix/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ELK</title>
+      <link>https://a-cat.cn/series/elk/</link>
+      <pubDate>Sat, 04 Jan 2020 19:08:29 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/series/elk/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>bug</title>
+      <link>https://a-cat.cn/series/bug/</link>
+      <pubDate>Sat, 04 Jan 2020 18:28:05 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/series/bug/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>python</title>
+      <link>https://a-cat.cn/series/python/</link>
+      <pubDate>Wed, 15 May 2019 12:49:13 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/series/python/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

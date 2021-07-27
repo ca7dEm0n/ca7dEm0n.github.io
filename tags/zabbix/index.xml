@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>zabbix on zeKe</title>
+    <link>https://a-cat.cn/tags/zabbix/</link>
+    <description>Recent content in zabbix on zeKe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 14 Jan 2020 23:46:10 +0800</lastBuildDate>
+    
+	<atom:link href="https://a-cat.cn/tags/zabbix/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Zabbix常用SQL操作</title>
+      <link>https://a-cat.cn/posts/ops/zabbix_sql/</link>
+      <pubDate>Tue, 14 Jan 2020 23:46:10 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/ops/zabbix_sql/</guid>
+      <description>前言 线上API项目中, 有部分常用Zabbix操作, 采用直接读库方式。
+ 本文章记录出现在项目中的常用SQL操作(主要以3.x版本为例)，主要使用Python语言做演示。
+ Zabbix一些对应关系及常量
+# 历史表对应ID ZBX_HISTORY_TABLES = (&amp;quot;history&amp;quot;, &amp;quot;history_str&amp;quot;, &amp;quot;history_log&amp;quot;, &amp;quot;history_uint&amp;quot;, &amp;quot;history_text&amp;quot;) # 一些主要的常量 ZBX_MAPPING = { &amp;quot;EVENT_SOURCE_TRIGGERS&amp;quot;: 0, &amp;quot;EVENT_OBJECT_TRIGGER&amp;quot;: 0, &amp;quot;TRIGGER_VALUE_FALSE&amp;quot;: 0, &amp;quot;SEC_PER_DAY&amp;quot;: 86400, &amp;quot;TRIGGER_VALUE_TRUE&amp;quot;: 1, &amp;quot;TRIGGER_VALUE_TRUE&amp;quot;: 0  常用基础操作 获取主机ID # hostname 主机名 def get_host_id(self, hostname): sql = &amp;quot;&amp;quot;&amp;quot; SELECT hg.</description>
+    </item>
+    
+  </channel>
+</rss>

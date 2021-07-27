@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Django Rest Framework Image Upload</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<script src="/js/book.js"></script>
+	<script src="/js/index.js"></script>
+	
+	<script>next()</script>
+</head>
+<body>
+	
+<header>
+	<a href="https://a-cat.cn" onclick="change('taiji')"><h1>☯️</h1></a>
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Django Rest Framework Image Upload</h1>
+			<time>28.02.2020 10:26</time>
+			<div>
+				
+
+<blockquote>
+<p>本文章记录在drf框架中实现图片上传功能.</p>
+</blockquote>
+
+<h2 id="models-py">models.py</h2>
+
+<pre><code class="language-python">import os
+from uuid import uuid4
+from datetime import datetime
+from django.utils import timezone
+from django.template.defaultfilters import date
+
+class ImgModel(models.Model):
+    def generate_image_filename(_, filename):
+        filename = &quot;%s-%s&quot; % (uuid4(), filename)
+        tzinfo = timezone.get_current_timezone()
+        date_dir = date(datetime.now(tz=tzinfo), 'Y/m/d')
+        return &quot;static/images/%s/%s&quot; % (date_dir, filename)
+    # echo: static/images/2020/02/28/930da205-7055-4ce7-9822-24ff2c500fe5-1.jpg
+
+    file = models.ImageField('图片', upload_to=generate_image_filename, blank=True)
+    uploaded_by = models.CharField(max_length=20, verbose_name='作者')
+    time = models.DateTimeField('创建时间', auto_now_add=True)
+</code></pre>
+
+<h2 id="serializer-py">serializer.py</h2>
+
+<pre><code class="language-python">from .models import *
+from rest_framework import serializers
+from rest_framework.serializers import ValidationError
+
+class ImgSerializers(serializers.ModelSerializer):
+    file = models.FileField(blank=False, null=False)
+
+    class Meta:
+        model = ImgModel
+        fields = &quot;__all__&quot;
+
+    def validate_file(self, value):
+        _allowed_ext = ('.jpg', '.jpeg', '.png', '.bmp', '.gif')
+        _, ext = os.path.splitext(value.name)
+        ext = ext.lower()
+        if ext not in _allowed_ext:
+            raise ValidationError(&quot;图片文件只允许以下后缀: %s.&quot; % (','.join(_allowed_ext), ))
+        return value
+</code></pre>
+
+<h2 id="views-py">views.py</h2>
+
+<pre><code class="language-python">from .serializer import *
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class ImageUploadView(APIView):
+    def post(self, request, *args, **kwargs):
+        request.data['uploaded_by'] = request.user.user_name
+        file_serializer = ImgSerializers(data=request.data)
+        if file_serializer.is_valid():
+            file_serializer.save()
+            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+</code></pre>
+
+<h2 id="settings-py">settings.py</h2>
+
+<pre><code class="language-python"># DEBUG=True
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, &quot;staticfiles&quot;),
+)
+STATIC_URL = '/static/'
+
+# DEBUG=False
+STATIC_ROOT = os.path.join(BASE_DIR, '/static/')
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = 'media/'
+</code></pre>
+
+<h2 id="url-py">url.py</h2>
+
+<pre><code class="language-python">from django.conf.urls.static import static
+from .settings import MEDIA_ROOT
+from .settings import MEDIA_URL
+
+urlpatterns = [
+    path('upload/', ImageUploadView.as_view()),
+] + static(MEDIA_URL, document_root=MEDIA_ROOT)
+</code></pre>
+
+<h2 id="测试">测试</h2>
+
+<p>上传</p>
+
+<pre><code class="language-shell"># 请求
+curl --location --request POST 'http://localhost:8000/upload/' \
+     --header 'Authorization: xxx' \
+     --form 'file=@/Users/cA7/Downloads/1.jpg'
+
+# 返回 
+{
+    &quot;file&quot;: &quot;media/static/images/2020/02/28/31894ca4-f1b0-406a-ac0a-7c52dbce3ef7-1.jpg&quot;,
+    &quot;uploaded_by&quot;: &quot;cA7&quot;,
+    &quot;time&quot;: &quot;2020-02-28T02:33:39.765007Z&quot;
+}
+</code></pre>
+
+<p>在<code>media/static/images/2020/02/28/</code>中可以看到图片.</p>
+
+<p>通过访问链接<code>http://localhost:8000/media/static/images/2020/02/28/31894ca4-f1b0-406a-ac0a-7c52dbce3ef7-1.jpg</code>可以看到图片.</p>
+
+			</div>
+			
+			<div>
+				<ul id="tags">
+					
+					<li><a href="/tags/drf">drf</a></li>
+					
+				</ul>
+			</div>
+			
+			<div>
+				
+			</div>
+		</article>
+	</main>
+<aside>
+	<div id="blog-content">
+		<div style="margin-top: 2em">
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/about/">关于我</a></li>
+				
+				<li><a href="/posts/python/my_zshrc/">花里胡哨::zshrc每日一个修仙小技巧</a></li>
+				
+				<li><a href="/posts/lua/lua_web_page/">openresty使用Lua开发简单功能页面</a></li>
+				
+				<li><a href="/posts/drf/drf_upload/">Django Rest Framework Image Upload</a></li>
+				
+				<li><a href="https://a-cat.cn/posts/about/">About</a></li>
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2021 <a href="https://a-cat.cn">zeKe</a></p>
+</footer>
+
+</body>
+</html>

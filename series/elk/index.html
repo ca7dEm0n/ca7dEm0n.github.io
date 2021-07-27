@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>ELK</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<script src="/js/book.js"></script>
+	<script src="/js/index.js"></script>
+	<link rel="alternate" type="application/rss+xml" href="/series/elk/index.xml" title="zeKe">
+	<script>next()</script>
+</head>
+<body>
+	
+<header>
+	<a href="https://a-cat.cn" onclick="change('taiji')"><h1>☯️</h1></a>
+</header>
+
+	
+	<main>
+		
+		<div>
+			<h1>ELK</h1>
+			
+		</div>
+		
+
+		
+			<article>
+	<h1><a href="https://a-cat.cn/posts/elk/logstash_post_body/">Logstash处理Nginx中文Post内容乱码</a></h1>
+	<time>04.01.2020 19:08</time>
+	
+	<a href="/tags/logstash">Logstash</a>
+	
+	<div>
+		本文章记录采集中有中文字符，出现乱码问题的处理.
+ 解决 scripts/nginx_request_body.rb
+def filter(event) # 设置index日期 event.set('index_day', event.timestamp.time.localtime.strftime('%Y%m%d')) # 切割message message_array = event.get(&quot;message&quot;).split(&quot;||&quot;) event.set(&quot;host&quot;, message_array[1]) ... # request_body字段 request_body = message_array[13] if request_body.
+		
+			<a href="https://a-cat.cn/posts/elk/logstash_post_body/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+		<div>
+
+1 of 1
+
+</div>
+
+	</main>
+<aside>
+	<div id="blog-content">
+		<div style="margin-top: 2em">
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/about/">关于我</a></li>
+				
+				<li><a href="/posts/python/my_zshrc/">花里胡哨::zshrc每日一个修仙小技巧</a></li>
+				
+				<li><a href="/posts/lua/lua_web_page/">openresty使用Lua开发简单功能页面</a></li>
+				
+				<li><a href="/posts/drf/drf_upload/">Django Rest Framework Image Upload</a></li>
+				
+				<li><a href="https://a-cat.cn/posts/about/">About</a></li>
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2021 <a href="https://a-cat.cn">zeKe</a></p>
+</footer>
+
+</body>
+</html>

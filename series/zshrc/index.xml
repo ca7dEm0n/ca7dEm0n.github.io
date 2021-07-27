@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>zshrc on zeKe</title>
+    <link>https://a-cat.cn/series/zshrc/</link>
+    <description>Recent content in zshrc on zeKe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 20 Jul 2020 00:00:04 +0800</lastBuildDate>
+    
+	<atom:link href="https://a-cat.cn/series/zshrc/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>花里胡哨::zshrc每日一个修仙小技巧</title>
+      <link>https://a-cat.cn/posts/python/my_zshrc/</link>
+      <pubDate>Mon, 20 Jul 2020 00:00:04 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/python/my_zshrc/</guid>
+      <description>  本文章记录实现一个花里胡哨的终端
+ 前言 某日，突然想到群里有发过花里胡哨的zshrc终端，闲着无事，也想捣鼓捣鼓。
+看过一些效果图，大多都是天气预报、git状态、电脑状态等。
+由于平时喜欢修仙，于是方向就有了!
+实现 ... 我也懒得详细描述了  #传送门.
+效果图 </description>
+    </item>
+    
+  </channel>
+</rss>

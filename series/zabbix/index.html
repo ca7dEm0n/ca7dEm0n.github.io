@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>zabbix</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<script src="/js/book.js"></script>
+	<script src="/js/index.js"></script>
+	<link rel="alternate" type="application/rss+xml" href="/series/zabbix/index.xml" title="zeKe">
+	<script>next()</script>
+</head>
+<body>
+	
+<header>
+	<a href="https://a-cat.cn" onclick="change('taiji')"><h1>☯️</h1></a>
+</header>
+
+	
+	<main>
+		
+		<div>
+			<h1>zabbix</h1>
+			
+		</div>
+		
+
+		
+			<article>
+	<h1><a href="https://a-cat.cn/posts/ops/zabbix_sql/">Zabbix常用SQL操作</a></h1>
+	<time>14.01.2020 23:46</time>
+	
+	<a href="/tags/zabbix">zabbix</a>
+	
+	<div>
+		前言 线上API项目中, 有部分常用Zabbix操作, 采用直接读库方式。
+ 本文章记录出现在项目中的常用SQL操作(主要以3.x版本为例)，主要使用Python语言做演示。
+ Zabbix一些对应关系及常量
+# 历史表对应ID ZBX_HISTORY_TABLES = (&quot;history&quot;, &quot;history_str&quot;, &quot;history_log&quot;, &quot;history_uint&quot;, &quot;history_text&quot;) # 一些主要的常量 ZBX_MAPPING = { &quot;EVENT_SOURCE_TRIGGERS&quot;: 0, &quot;EVENT_OBJECT_TRIGGER&quot;: 0, &quot;TRIGGER_VALUE_FALSE&quot;: 0, &quot;SEC_PER_DAY&quot;: 86400, &quot;TRIGGER_VALUE_TRUE&quot;: 1, &quot;TRIGGER_VALUE_TRUE&quot;: 0  常用基础操作 获取主机ID # hostname 主机名 def get_host_id(self, hostname): sql = &quot;&quot;&quot; SELECT hg.
+		
+			<a href="https://a-cat.cn/posts/ops/zabbix_sql/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+		<div>
+
+1 of 1
+
+</div>
+
+	</main>
+<aside>
+	<div id="blog-content">
+		<div style="margin-top: 2em">
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/about/">关于我</a></li>
+				
+				<li><a href="/posts/python/my_zshrc/">花里胡哨::zshrc每日一个修仙小技巧</a></li>
+				
+				<li><a href="/posts/lua/lua_web_page/">openresty使用Lua开发简单功能页面</a></li>
+				
+				<li><a href="/posts/drf/drf_upload/">Django Rest Framework Image Upload</a></li>
+				
+				<li><a href="https://a-cat.cn/posts/about/">About</a></li>
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2021 <a href="https://a-cat.cn">zeKe</a></p>
+</footer>
+
+</body>
+</html>

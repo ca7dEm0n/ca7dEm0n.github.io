@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>openresty on zeKe</title>
+    <link>https://a-cat.cn/series/openresty/</link>
+    <description>Recent content in openresty on zeKe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 16 Mar 2020 10:46:56 +0800</lastBuildDate>
+    
+	<atom:link href="https://a-cat.cn/series/openresty/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>openresty使用Lua开发简单功能页面</title>
+      <link>https://a-cat.cn/posts/lua/lua_web_page/</link>
+      <pubDate>Mon, 16 Mar 2020 10:46:56 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/lua/lua_web_page/</guid>
+      <description>本文章记录使用lua开发简单API功能页.
+ 前言 开发过程中遇到一些特别简单的接口需求，但是单独写一个api接口页面又很麻烦的需求，这个时候可以借助lua来实现.
+思路 将简单api功能模块化，统一存放某个路径.
+调用时判断模块是否存在，否则返回404.
+架构 实现根据字符串加载模块
+utils/tools.lua
+Tools = { _VERSION = &amp;quot;0.1&amp;quot; } -- 字符切割 function Tools:split(s, p) local rt = {} string.</description>
+    </item>
+    
+  </channel>
+</rss>

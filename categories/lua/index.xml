@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>lua on zeKe</title>
+    <link>https://a-cat.cn/categories/lua/</link>
+    <description>Recent content in lua on zeKe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 16 Mar 2020 10:46:56 +0800</lastBuildDate>
+    
+	<atom:link href="https://a-cat.cn/categories/lua/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>openresty使用Lua开发简单功能页面</title>
+      <link>https://a-cat.cn/posts/lua/lua_web_page/</link>
+      <pubDate>Mon, 16 Mar 2020 10:46:56 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/lua/lua_web_page/</guid>
+      <description>本文章记录使用lua开发简单API功能页.
+ 前言 开发过程中遇到一些特别简单的接口需求，但是单独写一个api接口页面又很麻烦的需求，这个时候可以借助lua来实现.
+思路 将简单api功能模块化，统一存放某个路径.
+调用时判断模块是否存在，否则返回404.
+架构 实现根据字符串加载模块
+utils/tools.lua
+Tools = { _VERSION = &amp;quot;0.1&amp;quot; } -- 字符切割 function Tools:split(s, p) local rt = {} string.</description>
+    </item>
+    
+    <item>
+      <title>Openresty开发采坑记录</title>
+      <link>https://a-cat.cn/posts/lua/bug/</link>
+      <pubDate>Sat, 04 Jan 2020 18:28:05 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/lua/bug/</guid>
+      <description>本文章记录Openresty学习使用过程中碰到的坑.
+ #1 打印日志 初学为了直观显示输出,习惯性使用ngx.say调试.
+在一开发跳转需求功能的时候发现:
+ ngx.say会覆盖ngx.req.set_uri(跳转功能)影响最终结果.
+ #2 Redis连接Bad request 为了Redis连接池共用，将Redis连接存储为共享数据.
+后续使用断断续续出现Bad request.
+查官网后得知真相:
+ 建议不要使用全局lua变量，并发请求可能会出现因资源竞争导致的请求失败. 传送门</description>
+    </item>
+    
+  </channel>
+</rss>

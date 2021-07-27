@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Logstash on zeKe</title>
+    <link>https://a-cat.cn/tags/logstash/</link>
+    <description>Recent content in Logstash on zeKe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 04 Jan 2020 19:08:29 +0800</lastBuildDate>
+    
+	<atom:link href="https://a-cat.cn/tags/logstash/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Logstash处理Nginx中文Post内容乱码</title>
+      <link>https://a-cat.cn/posts/elk/logstash_post_body/</link>
+      <pubDate>Sat, 04 Jan 2020 19:08:29 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/elk/logstash_post_body/</guid>
+      <description>本文章记录采集中有中文字符，出现乱码问题的处理.
+ 解决 scripts/nginx_request_body.rb
+def filter(event) # 设置index日期 event.set(&#39;index_day&#39;, event.timestamp.time.localtime.strftime(&#39;%Y%m%d&#39;)) # 切割message message_array = event.get(&amp;quot;message&amp;quot;).split(&amp;quot;||&amp;quot;) event.set(&amp;quot;host&amp;quot;, message_array[1]) ... # request_body字段 request_body = message_array[13] if request_body.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Django Rest Framework 分页功能与搜索功能</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<script src="/js/book.js"></script>
+	<script src="/js/index.js"></script>
+	
+	<script>next()</script>
+</head>
+<body>
+	
+<header>
+	<a href="https://a-cat.cn" onclick="change('taiji')"><h1>☯️</h1></a>
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Django Rest Framework 分页功能与搜索功能</h1>
+			<time>27.03.2019 10:25</time>
+			<div>
+				
+
+<blockquote>
+<p>本文章记录在drf框架中实现<code>分页</code>、<code>搜索</code>功能.</p>
+</blockquote>
+
+<h1 id="实践">实践</h1>
+
+<h3 id="分页器">分页器</h3>
+
+<p>分页器的实现官网介绍有两种方式：</p>
+
+<ul>
+<li>配置文件配置</li>
+<li>继承父类完成自定义分页器</li>
+</ul>
+
+<p><strong>分析分页器源码</strong></p>
+
+<p>自定义分页器主要是继承<code>PageNumberPagination</code>，改写<code>get_paginated_response</code>方法与<code>paginate_queryset</code>方法.
+&gt; 其中<code>get_paginated_response</code>主要是编写分页器的返回结果.</p>
+
+<p>需求示例：</p>
+
+<p>前端采用<code>iView</code>组件中的分页器，该前端分页器主要接收总页数与当前页数.所以后端需要返回数据，并且返回一个总页数.</p>
+
+<pre><code class="language-python">class MyPagination(PageNumberPagination):
+
+    # 指定每一页的个数，默认为配置文件里面的PAGE_SIZE
+    page_size = 10
+   
+
+    # 可以让前端指定每页个数，默认为空，这里指定page_size去指定显示个数
+    page_size_query_param = 'page_size'
+
+    # 可以让前端指定页码数，默认就是page参数去接收
+    page_query_param = 'page'
+    
+    # 指定返回格式，根据需求返回一个总页数，数据存在results字典里返回
+    def get_paginated_response(self, data):
+        from collections import OrderedDict
+        return Response(
+            OrderedDict([('count', self.page.paginator.count), ('results',data)]))
+</code></pre>
+
+<p>view.py</p>
+
+<pre><code class="language-python">def get(self, request, format=None):
+	pagination_class = MyPagination()
+	
+	# 资产列表库
+	assets_lists = AssetsList.objects.all().order_by('id')
+	
+	# 实例化查询
+	page_query = pagination_class.paginate_queryset(
+            queryset=assets_lists, request=request, view=self)
+            
+	# 序列化及结果返回
+  result_serializer = AssetsListSerializer(page_query, many=True)
+  page_result = pagination_class.get_paginated_response(
+            result_serializer.data)
+  return page_result
+</code></pre>
+
+<h3 id="搜索器">搜索器</h3>
+
+<p>分析源码，搜索器是对<code>models.Q</code>做条件查询.</p>
+
+<p>场景1：</p>
+
+<blockquote>
+<p>多个字段中包含搜索关键字返回</p>
+</blockquote>
+
+<pre><code class="language-python">from rest_framework import filters
+
+...
+def get(self, request, format=None):
+
+	# 实例化搜索器
+	search_class = filters.SearchFilter()
+	
+	# 资产列表
+	assets_lists = AssetsList.objects.all().order_by('id')
+	
+	# 指定需要搜索的字段，这些字段包含搜索关键字就返回结果;根据源码，搜索支持模糊匹配，精准匹配，正则匹配等
+	self.search_fields = ['id', 'property_number']
+	# http://a-cat.cn/?search=1，将会返回id、property_number包含1的结果
+	
+	# 搜索结果
+	search_query = search_class.filter_queryset(request, assets_lists, self)
+	
+	result_serializer = AssetsListSerializer(search_query,many=True)
+	return result_serializer.data
+
+</code></pre>
+
+<p>场景2：</p>
+
+<blockquote>
+<p>显示多个类型结果</p>
+</blockquote>
+
+<pre><code class="language-python">    def post(self, request, format=None):
+        view_types = request.data.get('types', '')
+        if view_types:
+
+						# 根据assets_type的id字段
+            queries = [
+                models.
+                Q(**
+                  {LOOKUP_SEP.join([&quot;assets_type__id&quot;, 'iexact']): type_name})
+                for type_name in json.loads(view_types)
+            ]
+            query_set = AssetsList.objects.filter(
+                reduce(operator.or_, queries))
+                
+</code></pre>
+
+<p>传入<code>assets_type</code>id列表，返回列表<code>id</code>类型结果</p>
+
+<h3 id="分页器与搜索器">分页器与搜索器</h3>
+
+<p>对搜索结果进行分页</p>
+
+<pre><code class="language-python">    def get(self, request, format=None):
+        pagination_class = MyPagination()
+        search_class = filters.SearchFilter()
+        self.search_fields = [
+            'id', 'property_number', 'specification_model',
+            'registration_card_number'
+        ]
+
+        assets_lists = AssetsList.objects.all().order_by('id')
+
+        search_query = search_class.filter_queryset(request, assets_lists,
+                                                    self)
+        page_query = pagination_class.paginate_queryset(
+            queryset=search_query, request=request, view=self)
+
+        result_serializer = AssetsListSerializer(page_query, many=True)
+        page_result = pagination_class.get_paginated_response(
+            result_serializer.data)
+        return page_result
+</code></pre>
+
+			</div>
+			
+			<div>
+				<ul id="tags">
+					
+					<li><a href="/tags/drf">drf</a></li>
+					
+				</ul>
+			</div>
+			
+			<div>
+				
+			</div>
+		</article>
+	</main>
+<aside>
+	<div id="blog-content">
+		<div style="margin-top: 2em">
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/about/">关于我</a></li>
+				
+				<li><a href="/posts/python/my_zshrc/">花里胡哨::zshrc每日一个修仙小技巧</a></li>
+				
+				<li><a href="/posts/lua/lua_web_page/">openresty使用Lua开发简单功能页面</a></li>
+				
+				<li><a href="/posts/drf/drf_upload/">Django Rest Framework Image Upload</a></li>
+				
+				<li><a href="https://a-cat.cn/posts/about/">About</a></li>
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2021 <a href="https://a-cat.cn">zeKe</a></p>
+</footer>
+
+</body>
+</html>

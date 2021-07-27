@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Python on zeKe</title>
+    <link>https://a-cat.cn/categories/python/</link>
+    <description>Recent content in Python on zeKe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 20 Jul 2020 00:00:04 +0800</lastBuildDate>
+    
+	<atom:link href="https://a-cat.cn/categories/python/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>花里胡哨::zshrc每日一个修仙小技巧</title>
+      <link>https://a-cat.cn/posts/python/my_zshrc/</link>
+      <pubDate>Mon, 20 Jul 2020 00:00:04 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/python/my_zshrc/</guid>
+      <description>  本文章记录实现一个花里胡哨的终端
+ 前言 某日，突然想到群里有发过花里胡哨的zshrc终端，闲着无事，也想捣鼓捣鼓。
+看过一些效果图，大多都是天气预报、git状态、电脑状态等。
+由于平时喜欢修仙，于是方向就有了!
+实现 ... 我也懒得详细描述了  #传送门.
+效果图 </description>
+    </item>
+    
+    <item>
+      <title>Django Rest Framework Image Upload</title>
+      <link>https://a-cat.cn/posts/drf/drf_upload/</link>
+      <pubDate>Fri, 28 Feb 2020 10:26:10 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/drf/drf_upload/</guid>
+      <description>本文章记录在drf框架中实现图片上传功能.
+ models.py import os from uuid import uuid4 from datetime import datetime from django.utils import timezone from django.</description>
+    </item>
+    
+    <item>
+      <title>Django Models查库姿势</title>
+      <link>https://a-cat.cn/posts/python/django_models/</link>
+      <pubDate>Tue, 14 Jan 2020 15:00:04 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/python/django_models/</guid>
+      <description>本文章记录django models使用姿势
+ datetime时间范围查询 查询今天内的的数据
+from datetime import datetime from datetime import time now_datetime = datetime.now() min_datetime = datetime.</description>
+    </item>
+    
+    <item>
+      <title>使用Django Rest Framework进行API接口开发</title>
+      <link>https://a-cat.cn/posts/drf/drf_develop/</link>
+      <pubDate>Mon, 06 Jan 2020 15:47:10 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/drf/drf_develop/</guid>
+      <description>本文章记录使用drf框架进行API接口开发
+ 安装  安装模块  pip install djangorestframework   快速启动项目  # 生成一个名为name的项目 django-admin startproject app # 生成名为api的app django-admin startapp api  引入 settings.</description>
+    </item>
+    
+    <item>
+      <title>尝试自己写一个Python缓存装饰器</title>
+      <link>https://a-cat.cn/posts/python/python_cache/</link>
+      <pubDate>Wed, 15 May 2019 12:49:13 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/python/python_cache/</guid>
+      <description>本文记录尝试编写一个简单的缓存装饰器，以学习为目的，实际生产环境建议大家用标准库。
+from hashlib import md5 from pickle import dump, load # 用pickle进行数据的读取、写入 def _dkL(f): with open(f,&#39;rb&#39;) as file: return load(file) def _dkD(o,f): with open(f, &#39;wb&#39;) as file: return dump(o,file) def cache(ex_time=10, start=0, have_args=True, have_kw=True, cache_path=&amp;quot;/tmp/pyCache&amp;quot;): # 判断缓存目录是否存在 if not path.</description>
+    </item>
+    
+    <item>
+      <title>Django Rest Framework 分页功能与搜索功能</title>
+      <link>https://a-cat.cn/posts/drf/drf_pages/</link>
+      <pubDate>Wed, 27 Mar 2019 10:25:13 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/drf/drf_pages/</guid>
+      <description>本文章记录在drf框架中实现分页、搜索功能.
+ 实践 分页器 分页器的实现官网介绍有两种方式：
+ 配置文件配置 继承父类完成自定义分页器  分析分页器源码
+自定义分页器主要是继承PageNumberPagination，改写get_paginated_response方法与paginate_queryset方法. &amp;gt; 其中get_paginated_response主要是编写分页器的返回结果.
+需求示例：
+前端采用iView组件中的分页器，该前端分页器主要接收总页数与当前页数.所以后端需要返回数据，并且返回一个总页数.
+class MyPagination(PageNumberPagination): # 指定每一页的个数，默认为配置文件里面的PAGE_SIZE page_size = 10 # 可以让前端指定每页个数，默认为空，这里指定page_size去指定显示个数 page_size_query_param = &#39;page_size&#39; # 可以让前端指定页码数，默认就是page参数去接收 page_query_param = &#39;page&#39; # 指定返回格式，根据需求返回一个总页数，数据存在results字典里返回 def get_paginated_response(self, data): from collections import OrderedDict return Response( OrderedDict([(&#39;count&#39;, self.</description>
+    </item>
+    
+    <item>
+      <title>Django Rest Framework JWT鉴权实践</title>
+      <link>https://a-cat.cn/posts/drf/drf_jwt/</link>
+      <pubDate>Fri, 22 Mar 2019 19:01:13 +0800</pubDate>
+      
+      <guid>https://a-cat.cn/posts/drf/drf_jwt/</guid>
+      <description>本文章记录在drf框架中对JWT鉴权实践过程.
+ 实践 安装djangorestframework-jwt模块
+场景1: 修改默认Username作为用户名验证  改成以uid作为用户名
+ settings.py
+JWT_PAYLOAD_GET_USERNAME_HANDLER = &#39;uid&#39; # 修改验证后端 AUTHENTICATION_BACKENDS = [ &#39;auth.</description>
+    </item>
+    
+  </channel>
+</rss>
